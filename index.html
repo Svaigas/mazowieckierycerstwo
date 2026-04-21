@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mazowieckie Rycerstwo</title>
+  <style>
+    :root {
+      --red: #c0392b;
+      --dark-red: #922b21;
+      --white: #fefefe;
+      --off-white: #f9f4ec;
+      --dark: #1a1a2e;
+      --gold: #d4a017;
+      --light-gold: #f0c040;
+      --text: #2c2c2c;
+      --snow: #e8f4fd;
+      --sky-blue: #1e88e5;
+      --deep-blue: #0d47a1;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: var(--off-white);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, var(--dark) 0%, #2d1b69 50%, var(--dark-red) 100%);
+      color: var(--white);
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .header-inner {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 32px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .coat-of-arms {
+      font-size: 64px;
+      filter: drop-shadow(0 0 12px rgba(212,160,23,0.6));
+      flex-shrink: 0;
+    }
+
+    .header-text h1 {
+      font-size: clamp(1.6rem, 4vw, 2.8rem);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+    }
+
+    .header-text .subtitle {
+      font-size: 1rem;
+      color: var(--light-gold);
+      margin-top: 6px;
+      letter-spacing: 1px;
+      font-style: italic;
+    }
+
+    .polish-stripe {
+      height: 6px;
+      background: linear-gradient(90deg, var(--white) 50%, var(--red) 50%);
+    }
+
+    /* ── TABS ── */
+    .tabs-nav {
+      background: var(--dark);
+      display: flex;
+      max-width: 100%;
+      border-bottom: 3px solid var(--gold);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 16px 20px;
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      font-size: 1rem;
+      font-family: 'Georgia', serif;
+      cursor: pointer;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: all 0.3s;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .tab-btn:hover { color: var(--light-gold); background: rgba(255,255,255,0.05); }
+
+    .tab-btn.active {
+      color: var(--light-gold);
+      border-bottom-color: var(--light-gold);
+      background: rgba(212,160,23,0.08);
+    }
+
+    .tab-icon { font-size: 1.4rem; }
+
+    /* ── TAB CONTENT ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── BATTLES TAB ── */
+    .battles-hero {
+      background: linear-gradient(to bottom, #2c1810, #5d2e0c);
+      color: var(--white);
+      text-align: center;
+      padding: 48px 24px;
+    }
+
+    .battles-hero h2 {
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      color: var(--light-gold);
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+      margin-bottom: 12px;
+    }
+
+    .battles-hero p {
+      max-width: 700px;
+      margin: 0 auto;
+      opacity: 0.85;
+      line-height: 1.7;
+      font-size: 1.05rem;
+    }
+
+    .battles-grid {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 24px 60px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 28px;
+    }
+
+    .battle-card {
+      background: var(--white);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      transition: transform 0.3s, box-shadow 0.3s;
+      border-top: 4px solid var(--red);
+    }
+
+    .battle-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+    }
+
+    .battle-card-header {
+      background: linear-gradient(135deg, #5d1f1f, #8b2020);
+      padding: 20px 24px 16px;
+      color: var(--white);
+    }
+
+    .battle-year {
+      font-size: 0.78rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--light-gold);
+      margin-bottom: 6px;
+    }
+
+    .battle-card-header h3 {
+      font-size: 1.25rem;
+      line-height: 1.3;
+    }
+
+    .battle-card-header .battle-icon {
+      font-size: 2rem;
+      float: right;
+      margin-top: -4px;
+    }
+
+    .battle-body {
+      padding: 20px 24px;
+    }
+
+    .battle-meta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .battle-tag {
+      font-size: 0.78rem;
+      background: #f0e8d8;
+      color: #6b3d14;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .battle-body p {
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: #3d3d3d;
+    }
+
+    .battle-result {
+      margin-top: 14px;
+      padding: 10px 14px;
+      border-left: 3px solid var(--gold);
+      background: #fffbf0;
+      font-size: 0.88rem;
+      font-style: italic;
+      color: #5a4000;
+    }
+
+    .featured-battle {
+      border-top: 4px solid var(--gold);
+      grid-column: 1 / -1;
+    }
+
+    .featured-battle .battle-card-header {
+      background: linear-gradient(135deg, #3d2800, #7a5200);
+    }
+
+    /* ── SKI JUMPS TAB ── */
+    .ski-hero {
+      background: linear-gradient(180deg, #0d47a1 0%, #1565c0 40%, #e3f0fd 100%);
+      color: var(--white);
+      text-align: center;
+      padding: 48px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ski-hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 60px;
+      background: var(--off-white);
+      clip-path: ellipse(60% 100% at 50% 100%);
+    }
+
+    .ski-hero h2 {
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+      margin-bottom: 12px;
+    }
+
+    .ski-hero p {
+      max-width: 700px;
+      margin: 0 auto;
+      opacity: 0.9;
+      line-height: 1.7;
+      font-size: 1.05rem;
+    }
+
+    .ski-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 60px;
+    }
+
+    .ski-section h3 {
+      font-size: 1.4rem;
+      color: var(--deep-blue);
+      border-bottom: 3px solid var(--sky-blue);
+      padding-bottom: 10px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .jumpers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .jumper-card {
+      background: var(--white);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      border-top: 4px solid var(--sky-blue);
+    }
+
+    .jumper-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(13,71,161,0.18);
+    }
+
+    .jumper-card.legend {
+      border-top-color: var(--gold);
+    }
+
+    .jumper-header {
+      background: linear-gradient(135deg, #0d47a1, #1976d2);
+      padding: 20px 24px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .jumper-card.legend .jumper-header {
+      background: linear-gradient(135deg, #b8860b, #d4a017);
+    }
+
+    .jumper-name { font-size: 1.2rem; font-weight: bold; }
+    .jumper-years { font-size: 0.82rem; opacity: 0.8; margin-top: 4px; }
+    .jumper-emoji { font-size: 2.2rem; }
+
+    .jumper-body { padding: 18px 22px; }
+
+    .medals {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .medal {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .medal.gold { background: #fff3cd; color: #7a5200; border: 1px solid #f0c040; }
+    .medal.silver { background: #f0f0f0; color: #555; border: 1px solid #aaa; }
+    .medal.bronze { background: #fde8d8; color: #7a3b00; border: 1px solid #cd7f32; }
+
+    .jumper-body p {
+      font-size: 0.93rem;
+      line-height: 1.7;
+      color: #3d3d3d;
+    }
+
+    .jump-highlight {
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: var(--snow);
+      border-left: 3px solid var(--sky-blue);
+      font-size: 0.88rem;
+      font-style: italic;
+      color: #1a3a6b;
+    }
+
+    .records-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      margin-bottom: 48px;
+    }
+
+    .records-table thead tr {
+      background: linear-gradient(135deg, #0d47a1, #1565c0);
+      color: white;
+    }
+
+    .records-table th, .records-table td {
+      padding: 13px 18px;
+      text-align: left;
+      font-size: 0.92rem;
+    }
+
+    .records-table tbody tr:nth-child(even) { background: #f0f6ff; }
+    .records-table tbody tr:hover { background: #dceeff; }
+
+    .records-table td:first-child { font-weight: bold; color: var(--deep-blue); }
+
+    .rank-1 td:first-child::before { content: '🥇 '; }
+    .rank-2 td:first-child::before { content: '🥈 '; }
+    .rank-3 td:first-child::before { content: '🥉 '; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      padding: 24px;
+      font-size: 0.82rem;
+    }
+
+    footer span { color: var(--red); }
+
+    @media (max-width: 600px) {
+      .header-inner { flex-direction: column; text-align: center; }
+      .coat-of-arms { font-size: 48px; }
+      .tab-btn { font-size: 0.82rem; padding: 12px 8px; }
+      .tab-icon { font-size: 1.1rem; }
+      .featured-battle { grid-column: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="coat-of-arms">⚔️</div>
+    <div class="header-text">
+      <h1>Mazowieckie Rycerstwo</h1>
+      <p class="subtitle">Historia polskiego oręża i sportowej chwały</p>
+    </div>
+  </div>
+</header>
+<div class="polish-stripe"></div>
+
+<nav class="tabs-nav">
+  <button class="tab-btn active" onclick="showTab('battles', this)">
+    <span class="tab-icon">🏰</span> Bitwy Polskie
+  </button>
+  <button class="tab-btn" onclick="showTab('ski', this)">
+    <span class="tab-icon">🎿</span> Skoki Narciarskie
+  </button>
+</nav>
+
+<!-- ════════════════ BITWY ════════════════ -->
+<section id="battles" class="tab-panel active">
+  <div class="battles-hero">
+    <h2>⚔️ Największe Bitwy w Historii Polski</h2>
+    <p>Przez wieki polscy rycerze, husaria i żołnierze bronili ojczyzny i kształtowali losy Europy.
+       Oto najważniejsze starcia, które weszły do kanonu narodowej chwały.</p>
+  </div>
+
+  <div class="battles-grid">
+
+    <!-- GRUNWALD -->
+    <div class="battle-card featured-battle">
+      <div class="battle-card-header">
+        <div class="battle-year">15 lipca 1410</div>
+        <span class="battle-icon">👑</span>
+        <h3>Bitwa pod Grunwaldem</h3>
+      </div>
+      <div class="battle-body">
+        <div class="battle-meta">
+          <span class="battle-tag">Królestwo Polskie &amp; Litwa vs. Krzyżacy</span>
+          <span class="battle-tag">Wielka Wojna</span>
+        </div>
+        <p>Największa bitwa średniowiecznej Europy. Pod dowództwem króla <strong>Władysława II Jagiełły</strong>
+           połączone siły polsko-litewskie rozgromiły Zakon Krzyżacki. W starciu wzięło udział ponad
+           50 000 rycerzy z obu stron. Mistrz Zakonu Ulrich von Jungingen zginął na polu bitwy.
+           Zwycięstwo zakończyło dominację Krzyżaków na Bałtyku i otworzyło drogę do polskiej potęgi
+           w XV wieku.</p>
+        <div class="battle-result">
+          ✅ Rozstrzygające zwycięstwo Polski i Litwy — jedno z największych w dziejach średniowiecznej Europy.
+        </div>
+      </div>
+    </div>
+
+    <!-- CHOCIM -->
+    <div class="battle-card">
+      <div class="battle-card-header">
+        <div class="battle-year">2 września – 9 października 1621</div>
+        <span class="battle-icon">🌙</span>
+        <h3>Bitwa pod Chocimiem</h3>
+      </div>
+      <div class="battle-body">
+        <div class="battle-meta">
+          <span class="battle-tag">Polska vs. Imperium Osmańskie</span>
+          <span class="battle-tag">Obrona chrześcijaństwa</span>
+        </div>
+        <p>Hetman <strong>Jan Karol Chodkiewicz</strong> z zaledwie 35 000 żołnierzy przez tygodnie
+           odpierał armię sułtana Osmana II liczącą ponad 100 000 ludzi. Starszy wiek i trudy kampanii
+           kosztowały Chodkiewicza życie w trakcie oblężenia — dowodzenie przejął Stanisław Lubomirski.
+           Traktat pokojowy zachował granice Rzeczypospolitej.
+           Bitwa zainspirowała Jana Kochanowskiego i stała się symbolem polskiej odwagi.</p>
+        <div class="battle-result">
+          ✅ Obrona granicy — Rzeczpospolita zachowała integralność terytorialną.
+        </div>
+      </div>
+    </div>
+
+    <!-- WIEDEŃ -->
+    <div class="battle-card">
+      <div class="battle-card-header">
+        <div class="battle-year">12 września 1683</div>
+        <span class="battle-icon">🦅</span>
+        <h3>Bitwa pod Wiedniem</h3>
+      </div>
+      <div class="battle-body">
+        <div class="battle-meta">
+          <span class="battle-tag">Liga Święta vs. Imperium Osmańskie</span>
+          <span class="battle-tag">Odsiecz Wiedeńska</span>
+        </div>
+        <p>Król <strong>Jan III Sobieski</strong> poprowadził największą szarżę kawalerii w historii —
+           18 000 husarzy i jazdy runęło na osmańskie pozycje ze wzgórza Kahlenberg.
+           Armia Kara Mustafy oblężona pod Wiedniem od dwóch miesięcy, została rozbita w ciągu kilku godzin.
+           Sobieski napisał do papieża: <em>„Venimus, vidimus, Deus vicit"</em>.
+           Bitwa zatrzymała ekspansję Osmanów w Europie Środkowej.</p>
+        <div class="battle-result">
+          ✅ Przełomowe zwycięstwo — koniec osmańskiego zagrożenia dla Europy Środkowej.
+        </div>
+      </div>
+    </div>
+
+    <!-- KIRCHHOLM -->
+    <div class="battle-card">
+      <div class="battle-card-header">
+        <div class="battle-year">27 września 1605</div>
+        <span class="battle-icon">🐴</span>
+        <h3>Bitwa pod Kircholmem</h3>
+      </div>
+      <div class="battle-body">
+        <div class="battle-meta">
+          <span class="battle-tag">Polska vs. Szwecja</span>
+          <span class="battle-tag">Dywizja Hetmana Chodkiewicza</span>
+        </div>
+        <p>Hetman <strong>Jan Karol Chodkiewicz</strong> dysponując zaledwie 3 700 żołnierzami pokonał
+           szwedzką armię Karola IX liczącą 11 000 ludzi. Husaria przeszła do historii: jej szarże były
+           tak skuteczne, że Szwedzi stracili niemal dwie trzecie wojska. To jedna z największych proporcjonalnych
+           zwycięstw w dziejach wojskowości europejskiej.</p>
+        <div class="battle-result">
+          ✅ Druzgocące zwycięstwo — 3 700 Polaków pokonało 11 000 Szwedów.
+        </div>
+      </div>
+    </div>
+
+    <!-- RACŁAWICE -->
+    <div class="battle-card">
+      <div class="battle-card-header">
+        <div class="battle-year">4 kwietnia 1794</div>
+        <span class="battle-icon">🌾</span>
+        <h3>Bitwa pod Racławicami</h3>
+      </div>
+      <div class="battle-body">
+        <div class="battle-meta">
+          <span class="battle-tag">Insurekcja Kościuszkowska vs. Rosja</span>
+          <span class="battle-tag">Kosynierzy</span>
+        </div>
+        <p>Naczelnik <strong>Tadeusz Kościuszko</strong> wysłał chłopskich ochotników uzbrojonych w kosy
+           do szturmu na rosyjskie baterie artyleryjskie. Kosynierzy zdobyli 12 armat, przełamując rosyjski
+           szyk i przypieczętowując polskie zwycięstwo. Bitwa stała się symbolem walki ludu o wolność
+           i do dziś jest jednym z najważniejszych miejsc pamięci narodowej.</p>
+        <div class="battle-result">
+          ✅ Polskie zwycięstwo — symbol patriotyzmu i odwagi prostego ludu.
+        </div>
+      </div>
+    </div>
+
+    <!-- CUDO NAD WISŁĄ -->
+    <div class="battle-card">
+      <div class="battle-card-header">
+        <div class="battle-year">13–25 sierpnia 1920</div>
+        <span class="battle-icon">🌟</span>
+        <h3>Bitwa Warszawska</h3>
+      </div>
+      <div class="battle-body">
+        <div class="battle-meta">
+          <span class="battle-tag">Polska vs. Sowiecka Rosja</span>
+          <span class="battle-tag">Cud nad Wisłą</span>
+        </div>
+        <p>Marszałek <strong>Józef Piłsudski</strong> wykonał brawurowy manewr oskrzydlający znad Wieprza,
+           rozbijając bolszewickie armie stojące u bram Warszawy. Lord Edgar D'Abernon nazwał tę bitwę
+           „18. bitwą decydującą w historii świata". Zwycięstwo zatrzymało ekspansję komunizmu na zachód
+           i uratowało niepodległość odrodzonej Polski.</p>
+        <div class="battle-result">
+          ✅ Kluczowe zwycięstwo — ocalenie niepodległości i zatrzymanie bolszewizmu w Europie.
+        </div>
+      </div>
+    </div>
+
+    <!-- MONTE CASSINO -->
+    <div class="battle-card">
+      <div class="battle-card-header">
+        <div class="battle-year">11–18 maja 1944</div>
+        <span class="battle-icon">🏔️</span>
+        <h3>Bitwa o Monte Cassino</h3>
+      </div>
+      <div class="battle-body">
+        <div class="battle-meta">
+          <span class="battle-tag">2 Korpus Polski vs. Niemcy</span>
+          <span class="battle-tag">II Wojna Światowa</span>
+        </div>
+        <p>Generał <strong>Władysław Anders</strong> poprowadził 2 Korpus Polski — żołnierzy, którzy
+           przeszli piekło łagrów sowieckich — do zdobycia twierdzy Monte Cassino we Włoszech.
+           Po trzech nieudanych szturmach alianckich Polacy 18 maja 1944 roku zatknęli flagę
+           na ruinach klasztoru. <em>„Czerwone maki na Monte Cassino"</em> stały się hymnem tęsknoty
+           za ojczyzną.</p>
+        <div class="battle-result">
+          ✅ Polskie zwycięstwo — zdobycie kluczowej pozycji Linii Gustawa we Włoszech.
+        </div>
+      </div>
+    </div>
+
+    <!-- WESTERPLATTE -->
+    <div class="battle-card">
+      <div class="battle-card-header">
+        <div class="battle-year">1–7 września 1939</div>
+        <span class="battle-icon">🏳️</span>
+        <h3>Obrona Westerplatte</h3>
+      </div>
+      <div class="battle-body">
+        <div class="battle-meta">
+          <span class="battle-tag">Polska vs. Niemcy</span>
+          <span class="battle-tag">II Wojna Światowa — pierwsze godziny</span>
+        </div>
+        <p>Major <strong>Henryk Sucharski</strong> z 182 żołnierzami przez 7 dni bronił składnicy
+           wojskowej przed wielokrotnie liczniejszymi oddziałami niemieckimi wspieranymi przez okręt wojenny
+           Schleswig-Holstein. Westerplatte stało się symbolem polskiego oporu od pierwszych chwil
+           II wojny światowej. Niemcy planowali zdobyć placówkę w kilkanaście minut.</p>
+        <div class="battle-result">
+          🛡️ Heroiczna obrona przez 7 dni — symbol polskiego oporu na początku II wojny.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════ SKOKI ════════════════ -->
+<section id="ski" class="tab-panel">
+  <div class="ski-hero">
+    <h2>🎿 Polskie Skoki Narciarskie — 40 Lat Chwały</h2>
+    <p>Od lat 80. XX wieku Polacy zachwycają świat skokami narciarskimi.
+       Oto najważniejsze skoki i zawodnicy, którzy tworzyli historię tej dyscypliny.</p>
+  </div>
+
+  <div class="ski-section">
+
+    <h3>🏆 Legendy Polskich Skoków</h3>
+    <div class="jumpers-grid">
+
+      <!-- ADAM MAŁYSZ -->
+      <div class="jumper-card legend">
+        <div class="jumper-header">
+          <div>
+            <div class="jumper-name">Adam Małysz</div>
+            <div class="jumper-years">Okres kariery: 1993–2011 | Wisła</div>
+          </div>
+          <span class="jumper-emoji">👑</span>
+        </div>
+        <div class="jumper-body">
+          <div class="medals">
+            <span class="medal gold">4× Kryształowa Kula</span>
+            <span class="medal gold">2× Mistrz Świata</span>
+            <span class="medal silver">2× srebrny medal OI</span>
+            <span class="medal bronze">4× brąz MŚ</span>
+          </div>
+          <p>Dekarz z Wisły, który stał się ikoną polskiego sportu. W sezonie 2000/2001 zdominował
+             Puchar Świata tak bardzo, że mówiono o „erze Małysza". Wygrał 4 Turnieje Czterech Skoczni
+             (2001, 2002, 2003, 2007). Jego skok w Titisee-Neustadt 2001 — 141,5 m — długo trzymał
+             się w pamięci kibiców. Doprowadził do masowego szaleństwa narciarskiego w Polsce.</p>
+          <div class="jump-highlight">
+            🎯 Rekord: 141,5 m (Titisee-Neustadt, 2001) — ówczesny rekord skoczni.
+          </div>
+        </div>
+      </div>
+
+      <!-- KAMIL STOCH -->
+      <div class="jumper-card legend">
+        <div class="jumper-header">
+          <div>
+            <div class="jumper-name">Kamil Stoch</div>
+            <div class="jumper-years">Okres kariery: 2006–nadal | Zęb</div>
+          </div>
+          <span class="jumper-emoji">🦅</span>
+        </div>
+        <div class="jumper-body">
+          <div class="medals">
+            <span class="medal gold">3× Mistrz Olimpijski</span>
+            <span class="medal gold">3× Kryształowa Kula</span>
+            <span class="medal gold">TCS 2018 (idealny wynik)</span>
+          </div>
+          <p>Dwukrotny mistrz olimpijski z Soczi 2014 (mała skocznia i duża) oraz złoty z Pjongczangu 2018.
+             W 2018 roku wygrał Turniej Czterech Skoczni jako jeden z czterech skoczków w historii,
+             którzy wygrali wszystkie cztery konkursy z rzędu.
+             Jego skok w Vikersund 2017 — 251,5 m — to jeden z najdłuższych skoków w historii.</p>
+          <div class="jump-highlight">
+            🎯 Skok życia: 251,5 m (Vikersund, 2017) — jeden z najdłuższych w historii.
+          </div>
+        </div>
+      </div>
+
+      <!-- PIOTR ŻYŁA -->
+      <div class="jumper-card">
+        <div class="jumper-header">
+          <div>
+            <div class="jumper-name">Piotr Żyła</div>
+            <div class="jumper-years">Okres kariery: 2006–nadal | Szczyrk</div>
+          </div>
+          <span class="jumper-emoji">😄</span>
+        </div>
+        <div class="jumper-body">
+          <div class="medals">
+            <span class="medal gold">Mistrz Świata 2021</span>
+            <span class="medal silver">2× Wicemistrz Świata</span>
+          </div>
+          <p>„Wiewiór" — ulubieniec polskich kibiców ze względu na charyzmatyczną osobowość.
+             Na MŚ w Oberstdorfie 2021 wywalczył złoto na dużej skoczni w wieku 34 lat, udowadniając,
+             że doświadczenie bije świeżość. Znany z niezmiennie pogodnego nastroju i niebanalnych
+             komentarzy po skokach.</p>
+          <div class="jump-highlight">
+            🎯 Najlepszy skok: 238,0 m (Vikersund, 2022) — nowy rekord Pol­ski w locie narciarskim.
+          </div>
+        </div>
+      </div>
+
+      <!-- DAWID KUBACKI -->
+      <div class="jumper-card">
+        <div class="jumper-header">
+          <div>
+            <div class="jumper-name">Dawid Kubacki</div>
+            <div class="jumper-years">Okres kariery: 2013–nadal | Nowy Targ</div>
+          </div>
+          <span class="jumper-emoji">🎯</span>
+        </div>
+        <div class="jumper-body">
+          <div class="medals">
+            <span class="medal gold">TCS 2019/2020</span>
+            <span class="medal gold">Mistrz Świata 2019 (lot)</span>
+            <span class="medal bronze">3× podium OI</span>
+          </div>
+          <p>Mistrz świata w lotach narciarskich z Planicy 2019 i zwycięzca Turnieju Czterech Skoczni
+             z sezonu 2019/2020. Techniczny, precyzyjny zawodnik o niezwykłej konsekwencji.
+             W sezonie 2022/2023 wygrał Kryształową Kulę, potwierdzając swoją pozycję w światowej czołówce.</p>
+          <div class="jump-highlight">
+            🎯 Najlepszy skok: 245,5 m (Planicy, 2019) — dał mu tytuł Mistrza Świata w lotach.
+          </div>
+        </div>
+      </div>
+
+      <!-- STEFAN HULA -->
+      <div class="jumper-card">
+        <div class="jumper-header">
+          <div>
+            <div class="jumper-name">Stefan Hula</div>
+            <div class="jumper-years">Okres kariery: 2003–2023 | Szczyrk</div>
+          </div>
+          <span class="jumper-emoji">🌟</span>
+        </div>
+        <div class="jumper-body">
+          <div class="medals">
+            <span class="medal gold">Drużynowe MŚ 2013</span>
+            <span class="medal silver">Srebrny medal OI 2018 (drużyna)</span>
+          </div>
+          <p>Jeden z najbardziej doświadczonych polskich skoczków, filar drużyny przez dwie dekady.
+             Jego stabilne skoki były fundamentem polskich sukcesów drużynowych. Na Igrzyskach
+             Olimpijskich w Pjongczangu 2018 zdobył srebrny medal w drużynie razem ze Stochem,
+             Kubackim i Żyłą — historyczny sukces polskiego skakania.</p>
+          <div class="jump-highlight">
+            🎯 Najlepszy skok: 143,5 m (Wisła, 2021) — wieloletnia lokomotywa polskiej drużyny.
+          </div>
+        </div>
+      </div>
+
+      <!-- ANDRZEJ STĘKAŁA -->
+      <div class="jumper-card">
+        <div class="jumper-header">
+          <div>
+            <div class="jumper-name">Andrzej Stękała</div>
+            <div class="jumper-years">Okres kariery: 2015–nadal | Zakopane</div>
+          </div>
+          <span class="jumper-emoji">🚀</span>
+        </div>
+        <div class="jumper-body">
+          <div class="medals">
+            <span class="medal silver">Srebro MŚ 2021 (lot)</span>
+            <span class="medal bronze">Brąz MŚ 2021</span>
+          </div>
+          <p>Odkrycie sezonu 2020/2021. Na MŚ w Oberstdorfie zaskoczył wszystkich znakomitymi wynikami
+             zarówno na normalnej skoczni, jak i w lotach. Jego dynamiczny styl i odwaga w locie
+             zapowiadają wielką przyszłość. W 2021 r. zdobył dwa medale na jednych mistrzostwach —
+             rzadki wyczyn dla młodego skoczka.</p>
+          <div class="jump-highlight">
+            🎯 Najlepszy skok: 243,5 m (Vikersund, 2022) — jeden z największych talentów Polski.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <h3>📊 Największe Polskie Skoki — Tabela Rekordów</h3>
+    <table class="records-table">
+      <thead>
+        <tr>
+          <th>Skoczek</th>
+          <th>Wynik</th>
+          <th>Miejsce</th>
+          <th>Rok</th>
+          <th>Znaczenie</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="rank-1">
+          <td>Piotr Żyła</td>
+          <td><strong>251,0 m</strong></td>
+          <td>Vikersund</td>
+          <td>2022</td>
+          <td>Aktualny rekord Polski w lotach</td>
+        </tr>
+        <tr class="rank-2">
+          <td>Dawid Kubacki</td>
+          <td><strong>245,5 m</strong></td>
+          <td>Planica</td>
+          <td>2019</td>
+          <td>Złoto MŚ w lotach narciarskich</td>
+        </tr>
+        <tr class="rank-3">
+          <td>Andrzej Stękała</td>
+          <td><strong>243,5 m</strong></td>
+          <td>Vikersund</td>
+          <td>2022</td>
+          <td>Srebrny medal MŚ w lotach 2021</td>
+        </tr>
+        <tr>
+          <td>Kamil Stoch</td>
+          <td><strong>251,5 m</strong></td>
+          <td>Vikersund</td>
+          <td>2017</td>
+          <td>Jeden z najdłuższych w historii</td>
+        </tr>
+        <tr>
+          <td>Adam Małysz</td>
+          <td><strong>225,5 m</strong></td>
+          <td>Vikersund</td>
+          <td>2003</td>
+          <td>Era dominacji Małysza w PŚ</td>
+        </tr>
+        <tr>
+          <td>Kamil Stoch</td>
+          <td><strong>145,0 m</strong></td>
+          <td>Bischofshofen</td>
+          <td>2018</td>
+          <td>TCS 2018 — 4/4 konkursy wygrane</td>
+        </tr>
+        <tr>
+          <td>Adam Małysz</td>
+          <td><strong>141,5 m</strong></td>
+          <td>Titisee-Neustadt</td>
+          <td>2001</td>
+          <td>Ówczesny rekord skoczni, szczyt „ery Małysza"</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>🏅 Polskie Złote Olimpijskie w Skokach</h3>
+    <table class="records-table">
+      <thead>
+        <tr>
+          <th>Zawodnik</th>
+          <th>Igrzyska</th>
+          <th>Rok</th>
+          <th>Konkurencja</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Kamil Stoch</td>
+          <td>Soczi (Rosja)</td>
+          <td>2014</td>
+          <td>Mała skocznia (HS106)</td>
+        </tr>
+        <tr>
+          <td>Kamil Stoch</td>
+          <td>Soczi (Rosja)</td>
+          <td>2014</td>
+          <td>Duża skocznia (HS140)</td>
+        </tr>
+        <tr>
+          <td>Kamil Stoch</td>
+          <td>Pjongczang (Korea)</td>
+          <td>2018</td>
+          <td>Duża skocznia (HS140)</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</section>
+
+<footer>
+  <p>© 2024 Mazowieckie Rycerstwo — Historia i Sport Polskich <span>♥</span> Bohaterów</p>
+</footer>
+
+<script>
+  function showTab(name, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(name).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
